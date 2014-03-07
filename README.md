@@ -14,6 +14,10 @@ Tiny, fast jQuery plugin to search through elements as you type. This plugin is 
 - **Custom show/hide**. You can define custom functions for showing and hiding the elements while searching.
 - **Search anything**. This plugin isn't restricted to use on tables, any set of elements that has 'rows' with 'columns' inside them can be used.
 
+## Demo
+
+[Click here](http://bootsnipp.com/snippets/93XX) to view a demo of this plugin in action (Hosted on [Bootsnipp](http://bootsnipp.com))
+
 ## Getting started
 
 ### Basic usage
