@@ -4,8 +4,11 @@
   "version": "1.0.0",
   "description": "Tiny, fast jQuery plugin to search through elements as you type.",
   "main": "jquery.searchable.js",
-  "private": true,
   "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stidges/jquery-searchable.git"
+  },
   "keywords": [
     "javascript",
     "jquery",

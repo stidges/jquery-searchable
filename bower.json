@@ -1,0 +1,27 @@
+{
+  "name": "jquery-searchable",
+  "version": "1.0.0",
+  "homepage": "https://github.com/stidges/jquery-searchable",
+  "authors": [
+    "Stidges <info@stidges.com>"
+  ],
+  "description": "Tiny, fast jQuery plugin to search through elements as you type.",
+  "main": [
+    "dist/jquery.searchable-1.0.0.min.js",
+    "jquery.searchable.js"
+  ],
+  "keywords": [
+    "jquery",
+    "javascript",
+    "search",
+    "searchable"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.9.0"
+  }
+}
