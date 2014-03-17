@@ -1,13 +1,13 @@
 jQuery Searchable Plugin
 ========================
 
-*Latest version: v1.0.0*
+*Latest version: v1.1.0* (View the [changelog](#changelog))
 
 Tiny, fast jQuery plugin to search through elements as you type. This plugin is created and maintained by **Stidges** ( [Twitter](http://twitter.com/stidges) | [Github](http://github.com/stidges) ).
 
 ## Features
 
-- **Lightweight**. This plugin is less than 800b minified and gzipped!
+- **Lightweight**. This plugin is only ~1kB minified and gzipped!
 - **Fast**. This plugin is optimized for fast, lagless searching even through large element sets.
 - **Multiple search types**. This plugin provides three different search types out-of-the-box! Fuzzy matching, strict (case sensitive) matching and default (case insensitive) matching.
 - **Automatic row striping**. When searching through a table, rows get hidden when they don't match. When using a CSS framework like [Bootstrap](http://getbootstrap.com) this would mess up your table striping. This plugin makes allows you to define the CSS to be applied to odd and even rows, and updates them while searching.
@@ -50,6 +50,11 @@ This plugin provides the following configuration options:
 | hide | `function` | Allows you to define a custom hiding function. This function accepts one parameter, which is the element (row) being hidden. By default it will use `elem.hide()` to hide the row. |
 | show | `function` | Allows you to define a custom show function. This function accepts one parameters, which is the element (row) being hidden. By default it will use `elem.show()` to show the row. |
 | searchType | `'default'` | Defines the matcher to be used when searching. Allowed values are `'fuzzy'`, `'strict'` and `'default'`. |
+| onSearchActive | `false` | Allows you to define a function to be called when the search is active. This function will be called whenever the user is typing into the search input and the search input is not empty. The searchable element and the search term will be passed to the function. |
+| onSearchEmpty | `false` | Allows you to define a function to be called when the search input is empty. This function will be called once when the search input is empty or cleared. The searchable element will be passed to the function. |
+| onSearchFocus | `false` | Allows you to define a function to be called when the search input is focussed. The `this` context of this function will be the search input element. |
+| onSearchBlur | `false` | Allows you to define a function to be called when the search input is blurred. The `this` context of this function will be the search input element. |
+| clearOnLoad | `false` | Determines whether the search input should be cleared on page load (either `true` or `false`). |
 
 ### Example usage
 
@@ -69,9 +74,33 @@ $( '#element' ).searchable({
     show          : function( elem ) {
         elem.fadeIn(50);
     },
-    searchType    : 'fuzzy'
+    searchType    : 'fuzzy',
+    onSearchActive : function( elem, term ) {
+        elem.show();
+    },
+    onSearchEmpty: function( elem ) {
+        elem.hide();
+    },
+    onSearchFocus: function() {
+        $( '#feedback' ).show().text( 'Type to search.' );
+    },
+    onSearchBlur: function() {
+        $( '#feedback' ).hide();
+    },
+    clearOnLoad: true
 });
 ```
+
+## Changelog
+
+**Version 1.0.0:**
+
+- Initial release.
+
+**Version 1.1.0:**
+
+- Added some events that allow you to call custom functions during the search lifecycle: onSearchActive, onSearchEmpty, onSearchFocus, onSearchBlur (view the [configuration](#configuration) for more information).
+- Added the `clearOnLoad` setting which allows you to clear the search input on page load / refresh.
 
 ## Contributing & Issues
 

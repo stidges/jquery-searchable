@@ -17,8 +17,21 @@
             evenRow: { },
             hide: function( elem ) { elem.hide(); },
             show: function( elem ) { elem.show(); },
-            searchType: 'default'
-        };
+            searchType: 'default',
+            onSearchActive: false,
+            onSearchEmpty: false,
+            onSearchFocus: false,
+            onSearchBlur: false,
+            clearOnLoad: false
+        },
+        searchActiveCallback = false,
+        searchEmptyCallback = false,
+        searchFocusCallback = false,
+        searchBlurCallback = false;
+
+    function isFunction(value) {
+        return typeof value === 'function';
+    }
 
     function Plugin( element, options ) {
         this.$element   = $( element );
@@ -33,8 +46,16 @@
             this.$search      = $( this.settings.searchField );
             this.matcherFunc  = this.getMatcherFunction( this.settings.searchType );
 
+            this.determineCallbacks();
             this.bindEvents();
             this.updateStriping();
+        },
+
+        determineCallbacks: function() {
+            searchActiveCallback = isFunction( this.settings.onSearchActive );
+            searchEmptyCallback = isFunction( this.settings.onSearchEmpty );
+            searchFocusCallback = isFunction( this.settings.onSearchFocus );
+            searchBlurCallback = isFunction( this.settings.onSearchBlur );
         },
 
         bindEvents: function() {
@@ -45,6 +66,19 @@
 
                 that.updateStriping();
             });
+
+            if ( searchFocusCallback ) {
+                this.$search.on( 'focus', this.settings.onSearchFocus );
+            }
+
+            if ( searchBlurCallback ) {
+                this.$search.on( 'blur', this.settings.onSearchBlur );
+            }
+
+            if ( this.settings.clearOnLoad === true ) {
+                this.$search.val( '' );
+                this.$search.trigger( 'change' );
+            }
 
             if ( this.$search.val() !== '' ) {
                 this.$search.trigger( 'change' );
@@ -72,7 +106,13 @@
                 this.$searchElems.css( 'display', '' );
                 this.updateStriping();
 
+                if ( searchEmptyCallback ) {
+                    this.settings.onSearchEmpty( this.$element );
+                }
+
                 return;
+            } else if ( searchActiveCallback ) {
+                this.settings.onSearchActive( this.$element, term );
             }
 
             elemCount = this.$searchElems.length;
