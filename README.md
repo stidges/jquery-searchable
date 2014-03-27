@@ -29,6 +29,8 @@ After downloading this plugin, include it in your HTML file after loading jQuery
 <script src="jquery.searchable.js"></script>
 ```
 
+**Note**: If you want to support older browsers like <IE9, you can use the `jquery.searchable-ie.js` instead of `jquery.searchable.js`. This version includes a polyfill for the `Array.prototype.reduce` function and is therefore slightly larger (a couple hundred bytes).
+
 After that, you can simply initialize the plugin on the desired element. This example uses a table with an id of 'table'. By default, the plugin uses an input with an id of 'search' (read about how to change this in the Configuration section below):
 
 ```js
