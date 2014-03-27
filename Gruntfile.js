@@ -10,6 +10,7 @@ module.exports = function (grunt) {
         jshint: {
             files: [
                 'jquery.searchable.js',
+                'jquery.searchable-ie.js',
                 'Gruntfile.js'
             ],
             options: {
@@ -25,7 +26,8 @@ module.exports = function (grunt) {
             },
             min: {
                 files: {
-                    'dist/jquery.searchable-<%= pkg.version %>.min.js': 'jquery.searchable.js'
+                    'dist/jquery.searchable-<%= pkg.version %>.min.js': 'jquery.searchable.js',
+                    'dist/jquery.searchable-ie-<%= pkg.version %>.min.js': 'jquery.searchable-ie.js'
                 }
             }
         },
@@ -35,12 +37,12 @@ module.exports = function (grunt) {
                 options: {
                     preset: 'jquery'
                 },
-                src: 'jquery.searchable.js'
+                src: [ 'jquery.searchable.js', 'jquery.searchable-ie.js' ]
             }
         },
 
         watch: {
-            files: [ 'jquery.searchable.js' ],
+            files: [ 'jquery.searchable.js', 'jquery.searchable-ie.js' ],
             tasks: 'default'
         }
     });
