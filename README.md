@@ -43,8 +43,8 @@ This plugin provides the following configuration options:
 
 | Option  | Default value  | Description  |
 | :------ | :------------- | :----------- |
-| selector | `'tbody tr'` | Defines the main selector within the element on which the plugin is initialized. This selects the 'rows' within the element. |
-| childSelector | `'td'` | Defines the child selector within the 'selector' defined above. This selects the 'columns' within the 'selector' element. |
+| selector | `'tbody tr'` | Defines the main jQuery selector within the element on which the plugin is initialized. This selects the container elements to show or hide, such as `tr`s within a table, or a `div.your-special-class` within the searchable element.|
+| childSelector | `'td'` | Defines the child selector within the 'selector' defined above. This selects the searchable elements within the 'selector' element, such as `td` or `.searchable`.|
 | searchField | `'#search'` | The input element that is used for the search input filter |
 | striped | `false` | Defines whether the element is striped and should be re-striped upon searching (either `true` or `false`) |
 | oddRow | `{ }` | Defines the CSS object to apply to the odd rows (when `striped` is set to `true`). |
