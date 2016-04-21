@@ -57,6 +57,8 @@ This plugin provides the following configuration options:
 | onSearchFocus | `false` | Allows you to define a function to be called when the search input is focussed. The `this` context of this function will be the search input element. |
 | onSearchBlur | `false` | Allows you to define a function to be called when the search input is blurred. The `this` context of this function will be the search input element. |
 | clearOnLoad | `false` | Determines whether the search input should be cleared on page load (either `true` or `false`). |
+| matcherFunction | `null` | A custom matcher function. Should return a function to be run against each `childSelector`. |
+| matchOnElement | `false` | If `true`, the element identified by `selector` is provided to the matcher function. If `false`, jQuery `.text()` is called on it first. Useful if `matcherFunction` provided. |
 
 ### Example usage
 
@@ -89,7 +91,16 @@ $( '#element' ).searchable({
     onSearchBlur: function() {
         $( '#feedback' ).hide();
     },
-    clearOnLoad: true
+    clearOnLoad: true,
+    matchOnElement: true,
+    matcherFunction: function(term) {
+        // this copies the logic of the plugin's default matcher, but matches on an element (rather than a text input) to demonstrate the `matchOnElement` option
+        term = $.trim(term).toLowerCase();
+        return function(column) {
+            return (column.text().toLowerCase().indexOf(term) !== -1);
+        };
+    }
+}
 });
 ```
 
@@ -103,6 +114,10 @@ $( '#element' ).searchable({
 
 - Added some events that allow you to call custom functions during the search lifecycle: onSearchActive, onSearchEmpty, onSearchFocus, onSearchBlur (view the [configuration](#configuration) for more information).
 - Added the `clearOnLoad` setting which allows you to clear the search input on page load / refresh.
+
+**Version 1.2.0:**
+
+- Added `matchOnElement` and `matcherFunction` options (IE version not updated).
 
 ## Contributing & Issues
 

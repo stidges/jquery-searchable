@@ -1,12 +1,12 @@
 /*!
- * jQuery Searchable Plugin v1.0.0
+ * jQuery Searchable Plugin v1.2.0
  * https://github.com/stidges/jquery-searchable
  *
  * Copyright 2014 Stidges
  * Released under the MIT license
  */
 ;(function( $, window, document, undefined ) {
-
+    
     var pluginName = 'searchable',
         defaults   = {
             selector: 'tbody tr',
@@ -22,7 +22,9 @@
             onSearchEmpty: false,
             onSearchFocus: false,
             onSearchBlur: false,
-            clearOnLoad: false
+            clearOnLoad: false,
+            matchOnElement: false,
+            matcherFunction: null
         },
         searchActiveCallback = false,
         searchEmptyCallback = false,
@@ -44,7 +46,7 @@
         init: function() {
             this.$searchElems = $( this.settings.selector, this.$element );
             this.$search      = $( this.settings.searchField );
-            this.matcherFunc  = this.getMatcherFunction( this.settings.searchType );
+            this.matcherFunc  = this.settings.matcherFunction || this.getMatcherFunction( this.settings.searchType );
 
             this.determineCallbacks();
             this.bindEvents();
@@ -100,7 +102,7 @@
         },
 
         search: function( term ) {
-            var matcher, elemCount, children, childCount, hide, $elem, i, x;
+            var matcher, elemCount, children, childCount, hide, $elem, i, x, elem_for_match
 
             if ( $.trim( term ).length === 0 ) {
                 this.$searchElems.css( 'display', '' );
@@ -125,7 +127,8 @@
                 hide       = true;
 
                 for ( x = 0; x < childCount; x++ ) {
-                    if ( matcher( $( children[ x ] ).text() ) ) {
+                    elem_for_match = this.settings.matchOnElement ? $(children[ x ]) : $(children[ x ]).text()
+                    if (matcher(elem_for_match)) {
                         hide = false;
                         break;
                     }
@@ -181,9 +184,8 @@
 
     $.fn[ pluginName ] = function( options ) {
         return this.each( function() {
-            if ( !$.data( this, 'plugin_' + pluginName ) ) {
-                $.data( this, 'plugin_' + pluginName, new Plugin(this, options) );
-            }
+            $.removeData( this, 'plugin_' + pluginName) // this also `delete`s the old plugin var if there is one
+            $.data( this, 'plugin_' + pluginName, new Plugin(this, options) )
         });
     };
 
