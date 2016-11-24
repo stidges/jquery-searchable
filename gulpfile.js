@@ -5,7 +5,7 @@ var rename = require('gulp-rename');
 var babel = require('gulp-babel');
 
 gulp.task('lint', function() {
-    return gulp.src('jquery.searchable.js')
+    return gulp.src('./src/jquery.searchable.js')
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
@@ -21,7 +21,7 @@ gulp.task('uglify', ['scripts'], function() {
 });
 
 gulp.task('scripts', function() {
-    return gulp.src('jquery.searchable.js')
+    return gulp.src('./src/jquery.searchable.js')
         .pipe(babel({
             presets: [
                 ['es2015', { modules: false }]
