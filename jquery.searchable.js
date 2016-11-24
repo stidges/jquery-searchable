@@ -2,7 +2,7 @@
  * jQuery Searchable Plugin v1.0.0
  * https://github.com/stidges/jquery-searchable
  *
- * Copyright 2014 Stidges
+ * Copyright 2016 Stidges
  * Released under the MIT license
  */
 ;(function( $, window, document, undefined ) {
@@ -150,10 +150,13 @@
         },
 
         getFuzzyMatcher: function( term ) {
-            var regexMatcher,
-                pattern = term.split( '' ).reduce( function( a, b ) {
-                    return a + '[^' + b + ']*' + b;
-                });
+            var letters = term.split( '' ),
+                pattern = letters[0],
+                regexMatcher;
+
+            for (var i = 1, len = letters.length; i < len; i++) {
+                pattern += '[^' + letters[i] + ']*' + letters[i];
+            }
 
             regexMatcher = new RegExp( pattern, 'gi' );
 
