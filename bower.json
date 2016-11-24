@@ -10,7 +10,7 @@
     "dist/jquery.searchable-1.1.0.min.js",
     "dist/jquery.searchable-ie-1.1.0.min.js",
     "jquery.searchable.js",
-    "jquery.searchable-ie.js",
+    "jquery.searchable-ie.js"
   ],
   "keywords": [
     "jquery",
