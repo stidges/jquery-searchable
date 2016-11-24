@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var eslint = require('gulp-eslint');
 var rename = require('gulp-rename');
+var babel = require('gulp-babel');
 
 gulp.task('lint', function() {
     return gulp.src('jquery.searchable.js')
@@ -10,8 +11,8 @@ gulp.task('lint', function() {
         .pipe(eslint.failAfterError());
 });
 
-gulp.task('uglify', function() {
-    return gulp.src('jquery.searchable.js')
+gulp.task('uglify', ['scripts'], function() {
+    return gulp.src('./dist/jquery.searchable.js')
         .pipe(uglify({
             preserveComments: 'license'
         }))
@@ -19,8 +20,13 @@ gulp.task('uglify', function() {
         .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('dist', ['uglify'], function() {
+gulp.task('scripts', function() {
     return gulp.src('jquery.searchable.js')
+        .pipe(babel({
+            presets: [
+                ['es2015', { modules: false }]
+            ],
+        }))
         .pipe(gulp.dest('./dist'));
 })
 

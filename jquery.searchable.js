@@ -1,191 +1,183 @@
 /*!
- * jQuery Searchable Plugin v1.0.0 (https://github.com/stidges/jquery-searchable)
+ * jQuery Searchable Plugin v2.0.0 (https://github.com/stidges/jquery-searchable)
  * Copyright 2014-2016 Stidges
  * Licensed under MIT (https://github.com/stidges/jquery-searchable/blob/master/LICENSE)
  */
-;(function( $, window, document, undefined ) {
+;(($) => {
 
-    var pluginName = 'searchable',
-        defaults   = {
-            selector: 'tbody tr',
-            childSelector: 'td',
-            searchField: '#search',
-            striped: false,
-            oddRow: { },
-            evenRow: { },
-            hide: function( elem ) { elem.hide(); },
-            show: function( elem ) { elem.show(); },
-            searchType: 'default',
-            onSearchActive: false,
-            onSearchEmpty: false,
-            onSearchFocus: false,
-            onSearchBlur: false,
-            clearOnLoad: false
+    'use strict';
+
+    const pluginName = 'searchable';
+    const pluginDataName = `plugin_${pluginName}`;
+    const defaults = {
+        selector: 'tbody tr',
+        childSelector: 'td',
+        searchField: '#search',
+        striped: false,
+        oddRow: {},
+        evenRow: {},
+        hide(elem) {
+            elem.hide();
         },
-        searchActiveCallback = false,
-        searchEmptyCallback = false,
-        searchFocusCallback = false,
-        searchBlurCallback = false;
+        show(elem) {
+            elem.show();
+        },
+        searchType: 'default',
+        onSearchActive: false,
+        onSearchEmpty: false,
+        onSearchFocus: false,
+        onSearchBlur: false,
+        clearOnLoad: false
+    };
+    let searchActiveCallback = false;
+    let searchEmptyCallback = false;
+    let searchFocusCallback = false;
+    let searchBlurCallback = false;
 
-    function isFunction(value) {
-        return typeof value === 'function';
-    }
-
-    function Plugin( element, options ) {
-        this.$element   = $( element );
-        this.settings   = $.extend( {}, defaults, options );
+    function Plugin(element, options) {
+        this.$element = $(element);
+        this.settings = $.extend({}, defaults, options);
 
         this.init();
     }
 
     Plugin.prototype = {
-        init: function() {
-            this.$searchElems = $( this.settings.selector, this.$element );
-            this.$search      = $( this.settings.searchField );
-            this.matcherFunc  = this.getMatcherFunction( this.settings.searchType );
+        init() {
+            this.$searchElems = $(this.settings.selector, this.$element);
+            this.$search = $(this.settings.searchField);
+            this.matcherFunc = this.getMatcherFunction(this.settings.searchType);
 
             this.determineCallbacks();
             this.bindEvents();
             this.updateStriping();
         },
 
-        determineCallbacks: function() {
-            searchActiveCallback = isFunction( this.settings.onSearchActive );
-            searchEmptyCallback = isFunction( this.settings.onSearchEmpty );
-            searchFocusCallback = isFunction( this.settings.onSearchFocus );
-            searchBlurCallback = isFunction( this.settings.onSearchBlur );
+        determineCallbacks() {
+            searchActiveCallback = $.isFunction(this.settings.onSearchActive);
+            searchEmptyCallback = $.isFunction(this.settings.onSearchEmpty);
+            searchFocusCallback = $.isFunction(this.settings.onSearchFocus);
+            searchBlurCallback = $.isFunction(this.settings.onSearchBlur);
         },
 
-        bindEvents: function() {
-            var that = this;
+        bindEvents() {
+            this.$search.on('change keyup', (e) => {
+                this.search($(e.currentTarget).val());
 
-            this.$search.on( 'change keyup', function() {
-                that.search( $( this ).val() );
-
-                that.updateStriping();
+                this.updateStriping();
             });
 
-            if ( searchFocusCallback ) {
-                this.$search.on( 'focus', this.settings.onSearchFocus );
+            if (searchFocusCallback) {
+                this.$search.on('focus', this.settings.onSearchFocus);
             }
 
-            if ( searchBlurCallback ) {
-                this.$search.on( 'blur', this.settings.onSearchBlur );
+            if (searchBlurCallback) {
+                this.$search.on('blur', this.settings.onSearchBlur);
             }
 
-            if ( this.settings.clearOnLoad === true ) {
-                this.$search.val( '' );
-                this.$search.trigger( 'change' );
+            if (this.settings.clearOnLoad === true) {
+                this.$search.val('');
+                this.$search.trigger('change');
             }
 
-            if ( this.$search.val() !== '' ) {
-                this.$search.trigger( 'change' );
+            if (this.$search.val() !== '') {
+                this.$search.trigger('change');
             }
         },
 
-        updateStriping: function() {
-            var that     = this,
-                styles   = [ 'oddRow', 'evenRow' ],
-                selector = this.settings.selector + ':visible';
+        updateStriping() {
+            const styles = ['oddRow', 'evenRow'];
+            const selector = `${this.settings.selector}:visible`;
 
-            if ( !this.settings.striped ) {
+            if (!this.settings.striped) {
                 return;
             }
 
-            $( selector, this.$element ).each( function( i, row ) {
-                $( row ).css( that.settings[ styles[ i % 2 ] ] );
+            $(selector, this.$element).each((i, row) => {
+                $(row).css(this.settings[styles[i % 2]]);
             });
         },
 
-        search: function( term ) {
-            var matcher, elemCount, children, childCount, hide, $elem, i, x;
-
-            if ( $.trim( term ).length === 0 ) {
-                this.$searchElems.css( 'display', '' );
+        search(term) {
+            if ($.trim(term).length === 0) {
+                this.$searchElems.css('display', '');
                 this.updateStriping();
 
-                if ( searchEmptyCallback ) {
-                    this.settings.onSearchEmpty( this.$element );
+                if (searchEmptyCallback) {
+                    this.settings.onSearchEmpty(this.$element);
                 }
 
                 return;
-            } else if ( searchActiveCallback ) {
-                this.settings.onSearchActive( this.$element, term );
+            } else if (searchActiveCallback) {
+                this.settings.onSearchActive(this.$element, term);
             }
 
-            elemCount = this.$searchElems.length;
-            matcher   = this.matcherFunc( term );
+            const elemCount = this.$searchElems.length;
+            const matcher = this.matcherFunc(term);
 
-            for ( i = 0; i < elemCount; i++ ) {
-                $elem      = $( this.$searchElems[ i ] );
-                children   = $elem.find( this.settings.childSelector );
-                childCount = children.length;
-                hide       = true;
+            for (let i = 0; i < elemCount; i++) {
+                const $elem = $(this.$searchElems[i]);
+                const children = $elem.find(this.settings.childSelector);
+                const childCount = children.length;
+                let hide = true;
 
-                for ( x = 0; x < childCount; x++ ) {
-                    if ( matcher( $( children[ x ] ).text() ) ) {
+                for (let x = 0; x < childCount; x++) {
+                    if (matcher($(children[x]).text())) {
                         hide = false;
                         break;
                     }
                 }
 
-                if ( hide === true ) {
-                    this.settings.hide( $elem );
+                if (hide === true) {
+                    this.settings.hide($elem);
                 } else {
-                    this.settings.show( $elem );
+                    this.settings.show($elem);
                 }
             }
         },
 
-        getMatcherFunction: function( type ) {
-            if ( type === 'fuzzy' ) {
+        getMatcherFunction(type) {
+            if (type === 'fuzzy') {
                 return this.getFuzzyMatcher;
-            } else if ( type === 'strict' ) {
+            } else if (type === 'strict') {
                 return this.getStrictMatcher;
             }
 
             return this.getDefaultMatcher;
         },
 
-        getFuzzyMatcher: function( term ) {
-            var letters = term.split( '' ),
-                pattern = letters[0],
-                regexMatcher;
+        getFuzzyMatcher(term) {
+            const letters = term.split('');
+            let pattern = letters[0];
 
-            for (var i = 1, len = letters.length; i < len; i++) {
-                pattern += '[^' + letters[i] + ']*' + letters[i];
+            for (let i = 1, len = letters.length; i < len; i++) {
+                const letter = letters[i];
+                pattern += `[^${letter}]*${letter}`;
             }
 
-            regexMatcher = new RegExp( pattern, 'gi' );
+            const regexMatcher = new RegExp(pattern, 'gi');
 
-            return function( s ) {
-                return regexMatcher.test( s );
-            };
+            return (s) => regexMatcher.test(s);
         },
 
-        getStrictMatcher: function( term ) {
-            term = $.trim( term );
+        getStrictMatcher(term) {
+            term = $.trim(term);
 
-            return function( s ) {
-                return ( s.indexOf( term ) !== -1 );
-            };
+            return (s) => s.indexOf(term) !== -1;
         },
 
-        getDefaultMatcher: function( term ) {
-            term = $.trim( term ).toLowerCase();
+        getDefaultMatcher(term) {
+            term = $.trim(term).toLowerCase();
 
-            return function( s ) {
-                return ( s.toLowerCase().indexOf( term ) !== -1 );
-            };
+            return (s) => s.toLowerCase().indexOf(term) !== -1;
         }
     };
 
-    $.fn[ pluginName ] = function( options ) {
-        return this.each( function() {
-            if ( !$.data( this, 'plugin_' + pluginName ) ) {
-                $.data( this, 'plugin_' + pluginName, new Plugin(this, options) );
+    $.fn[pluginName] = function(options) {
+        return this.each((i, elem) => {
+            if (!$.data(elem, pluginDataName)) {
+                $.data(elem, pluginDataName, new Plugin(elem, options));
             }
         });
     };
 
-})( jQuery, window, document );
+})(jQuery, window, document);
