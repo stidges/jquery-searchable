@@ -1,9 +1,7 @@
 /*!
- * jQuery Searchable Plugin v1.0.0
- * https://github.com/stidges/jquery-searchable
- *
- * Copyright 2016 Stidges
- * Released under the MIT license
+ * jQuery Searchable Plugin v1.0.0 (https://github.com/stidges/jquery-searchable)
+ * Copyright 2014-2016 Stidges
+ * Licensed under MIT (https://github.com/stidges/jquery-searchable/blob/master/LICENSE)
  */
 ;(function( $, window, document, undefined ) {
 

@@ -1,0 +1,27 @@
+var gulp = require('gulp');
+var uglify = require('gulp-uglify');
+var eslint = require('gulp-eslint');
+var rename = require('gulp-rename');
+
+gulp.task('lint', function() {
+    return gulp.src('jquery.searchable.js')
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+
+gulp.task('uglify', function() {
+    return gulp.src('jquery.searchable.js')
+        .pipe(uglify({
+            preserveComments: 'license'
+        }))
+        .pipe(rename('jquery.searchable.min.js'))
+        .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('dist', ['uglify'], function() {
+    return gulp.src('jquery.searchable.js')
+        .pipe(gulp.dest('./dist'));
+})
+
+gulp.task('default', ['lint']);
