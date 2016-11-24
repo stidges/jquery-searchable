@@ -110,4 +110,4 @@ Please feel free to submit any issues or pull requests, they are more then welco
 
 ## License
 
-Copyright (c) 2014 - Stidges - Licensed under [the MIT license](LICENSE).
+Copyright (c) 2016 - Stidges - Licensed under [the MIT license](LICENSE).
