@@ -28,6 +28,7 @@ $(function() {
             this.$table = $('#t1 .table');
             this.$search = $('#t1 .search');
             this.$rows = this.$table.find('tbody tr');
+            this.$search.val('');
         }
     }, function() {
         QUnit.test('should reset the row visiblity when the input term is empty', function(assert) {
@@ -48,6 +49,16 @@ $(function() {
             assert.visibleRowCount(this.$rows, 3, 'The table body should initially contain 3 rows');
 
             this.$search.val('foo').trigger('change');
+            assert.visibleRowCount(this.$rows, 1, 'The table body should contain 1 row after filtering');
+        });
+
+        QUnit.test('should trim any whitespace from the input term', function(assert) {
+            assert.expect(2);
+
+            this.$table.searchable(this.settings);
+            assert.visibleRowCount(this.$rows, 3, 'The table body should initially contain 3 rows');
+
+            this.$search.val('  foo  ').trigger('change');
             assert.visibleRowCount(this.$rows, 1, 'The table body should contain 1 row after filtering');
         });
 
@@ -92,6 +103,7 @@ $(function() {
             this.$table = $('#t2 .table');
             this.$search = $('#t2 .search');
             this.$rows = this.$table.find('tbody tr');
+            this.$search.val('');
         }
     }, function() {
         QUnit.test('should be updated after initialization', function(assert) {
@@ -99,8 +111,8 @@ $(function() {
 
             this.$table.searchable(this.settings);
 
-            assert.color(this.$rows.eq(0).css('background-color'), '#ccc', '');
-            assert.color(this.$rows.eq(1).css('background-color'), '#fff', '');
+            assert.color(this.$rows.eq(0).css('background-color'), '#ccc', 'The oddRow styles should be applied after initialization');
+            assert.color(this.$rows.eq(1).css('background-color'), '#fff', 'The evenRow styles should be applied after initialization');
         });
 
         // Running inside a hidden div should still update striping correctly.
@@ -112,8 +124,8 @@ $(function() {
 
             this.$table.searchable(this.settings);
 
-            assert.color(this.$rows.eq(0).css('background-color'), '#ccc', '');
-            assert.color(this.$rows.eq(1).css('background-color'), '#fff', '');
+            assert.color(this.$rows.eq(0).css('background-color'), '#ccc', 'The oddRow styles should be applied inside a hidden element');
+            assert.color(this.$rows.eq(1).css('background-color'), '#fff', 'The evenRow styles should be applied inside a hidden element');
         });
 
         QUnit.test('should be updated after searching', function(assert) {
@@ -122,9 +134,9 @@ $(function() {
             this.$table.searchable(this.settings);
             this.$search.val('foo').trigger('change');
 
-            assert.visibleRowCount(this.$rows, 2, '');
-            assert.color(this.$rows.eq(0).css('background-color'), '#ccc', '');
-            assert.color(this.$rows.eq(2).css('background-color'), '#fff', '');
+            assert.visibleRowCount(this.$rows, 2, 'The table should initially contain 2 visible rows');
+            assert.color(this.$rows.eq(0).css('background-color'), '#ccc', 'The odd row styles should be applied after searching');
+            assert.color(this.$rows.eq(2).css('background-color'), '#fff', 'The even row styles should be applied after searching');
         });
     });
 
@@ -138,6 +150,7 @@ $(function() {
             this.$table = $('#t1 .table');
             this.$search = $('#t1 .search');
             this.$rows = this.$table.find('tbody tr');
+            this.$search.val('');
         }
     }, function() {
         QUnit.test('should trigger onSearchFocus callback when search input is focussed', function(assert) {
@@ -145,7 +158,7 @@ $(function() {
             var called = false;
             this.$table.searchable($.extend({ onSearchFocus: function() { called = true; }}, this.settings));
             this.$search.triggerHandler('focus');
-            assert.ok(called, 'When search input is focussed the onSearchFocus callback should be triggered');
+            assert.ok(called, 'The onSearchFocus callback should be triggered when the search input is focussed');
         });
 
         QUnit.test('should trigger onSearchBlur callback when search input is blurred', function(assert) {
@@ -153,23 +166,23 @@ $(function() {
             var called = false;
             this.$table.searchable($.extend({ onSearchBlur: function() { called = true; }}, this.settings));
             this.$search.triggerHandler('blur');
-            assert.ok(called, 'When search input is blurred the onSearchBlur callback should be triggered');
+            assert.ok(called, 'The onSearchBlur callback should be triggered when the search input is blurred');
         });
 
-        QUnit.test('should trigger onSearchActive callback with the entered search term when searching', function(assert) {
+        QUnit.test('should trigger onSearchActive callback with the input term when searching', function(assert) {
             assert.expect(1);
             var result = null;
             this.$table.searchable($.extend({ onSearchActive: function($elem, term) { result = term; }}, this.settings));
             this.$search.val('foo').trigger('change');
-            assert.equal(result, 'foo', 'When searching the onSearchActive callback should be triggered with the entered search term')
+            assert.equal(result, 'foo', 'Th onSearchActive callback should be triggered with the input term when searching')
         });
 
-        QUnit.test('should trigger onSearchEmpty callback when the search term is empty', function(assert) {
+        QUnit.test('should trigger onSearchEmpty callback when the input term is empty', function(assert) {
             assert.expect(1);
             var called = false;
             this.$table.searchable($.extend({ onSearchEmpty: function() { called = true; }}, this.settings));
             this.$search.val('').trigger('change');
-            assert.ok(called, 'When the search term is empty the onSearchEmpty callback should be triggered');
+            assert.ok(called, 'The onSearchEmpty callback should be triggered when the search term is empty');
         });
 
         // Before, the check if a certain callback was passed was stored in global variables,
@@ -178,10 +191,39 @@ $(function() {
         QUnit.test('should not store the callback function check in a global variable', function(assert) {
             assert.expect(1);
             var called = false;
-            $('#t1 .table').searchable($.extend({ onSearchEmpty: function() { called = true; } }, this.settings));
+            $('#t1 .table').searchable($.extend({ searchField: '#t1 .search', onSearchEmpty: function() { called = true; } }, this.settings));
             $('#t2 .table').searchable($.extend({ searchField: '#t2 .search' }, this.settings));
             $('#t1 .search').val('').trigger('change');
-            assert.ok(called, '');
+            assert.ok(called, 'The onSearchEmpty should be called');
+        });
+    });
+
+    QUnit.module('clearOnLoad', function() {
+        QUnit.test('should clear the search input and trigger an empty search after initialization', function(assert) {
+            assert.expect(2);
+            var called = false;
+            $('#t1 .search').val('foo');
+            $('#t1 .table').searchable({ searchField: '#t1 .search', clearOnLoad: true, onSearchEmpty: function() { called = true; } });
+            assert.equal($('#t1 .search').val(), '', 'The search input should be cleared.');
+            assert.ok(called, 'The onSearchEmpty callback should be triggered');
+        });
+    });
+
+    QUnit.module('showing and hiding', function() {
+        QUnit.test('should allow for custom show and hide functions', function(assert) {
+            assert.expect(2);
+            var showElems = [];
+            var hideElems = [];
+            $('#t1 .search').val('');
+            $('#t1 .table').searchable({
+                searchField: '#t1 .search',
+                show: function($elem) { showElems.push($elem[0]); },
+                hide: function($elem) { hideElems.push($elem[0]); }
+            });
+            $('#t1 .search').val('foo').trigger('change');
+            var $rows = $('#t1 .table tbody tr');
+            assert.deepEqual($rows.slice(0, 1).toArray(), showElems);
+            assert.deepEqual($rows.slice(1).toArray(), hideElems);
         });
     });
 
