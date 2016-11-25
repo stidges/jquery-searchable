@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var eslint = require('gulp-eslint');
 var rename = require('gulp-rename');
-var babel = require('gulp-babel');
+var buble = require('gulp-buble');
 
 gulp.task('lint', function() {
     return gulp.src('./src/jquery.searchable.js')
@@ -22,11 +22,7 @@ gulp.task('uglify', ['scripts'], function() {
 
 gulp.task('scripts', function() {
     return gulp.src('./src/jquery.searchable.js')
-        .pipe(babel({
-            presets: [
-                ['es2015', { modules: false }]
-            ],
-        }))
+        .pipe(buble())
         .pipe(gulp.dest('./dist'));
 });
 
