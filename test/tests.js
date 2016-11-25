@@ -128,4 +128,61 @@ $(function() {
         });
     });
 
+    QUnit.module('events', {
+        beforeEach: function() {
+            this.settings = {
+                searchField: '#t1 .search',
+                selector: 'tbody tr',
+                childSelector: 'td',
+            };
+            this.$table = $('#t1 .table');
+            this.$search = $('#t1 .search');
+            this.$rows = this.$table.find('tbody tr');
+        }
+    }, function() {
+        QUnit.test('should trigger onSearchFocus callback when search input is focussed', function(assert) {
+            assert.expect(1);
+            var called = false;
+            this.$table.searchable($.extend({ onSearchFocus: function() { called = true; }}, this.settings));
+            this.$search.triggerHandler('focus');
+            assert.ok(called, 'When search input is focussed the onSearchFocus callback should be triggered');
+        });
+
+        QUnit.test('should trigger onSearchBlur callback when search input is blurred', function(assert) {
+            assert.expect(1);
+            var called = false;
+            this.$table.searchable($.extend({ onSearchBlur: function() { called = true; }}, this.settings));
+            this.$search.triggerHandler('blur');
+            assert.ok(called, 'When search input is blurred the onSearchBlur callback should be triggered');
+        });
+
+        QUnit.test('should trigger onSearchActive callback with the entered search term when searching', function(assert) {
+            assert.expect(1);
+            var result = null;
+            this.$table.searchable($.extend({ onSearchActive: function($elem, term) { result = term; }}, this.settings));
+            this.$search.val('foo').trigger('change');
+            assert.equal(result, 'foo', 'When searching the onSearchActive callback should be triggered with the entered search term')
+        });
+
+        QUnit.test('should trigger onSearchEmpty callback when the search term is empty', function(assert) {
+            assert.expect(1);
+            var called = false;
+            this.$table.searchable($.extend({ onSearchEmpty: function() { called = true; }}, this.settings));
+            this.$search.val('').trigger('change');
+            assert.ok(called, 'When the search term is empty the onSearchEmpty callback should be triggered');
+        });
+
+        // Before, the check if a certain callback was passed was stored in global variables,
+        // this caused callbacks not to be called if another searchable instance was initialized
+        // without callbacks after a searchable instance with callbacks.
+        QUnit.test('should not store the callback function check in a global variable', function(assert) {
+            assert.expect(1);
+            var called = false;
+            $('#t1 .table').searchable($.extend({ onSearchEmpty: function() { called = true; } }, this.settings));
+            $('#t2 .table').searchable($.extend({ searchField: '#t2 .search' }, this.settings));
+            $('#t1 .search').val('').trigger('change');
+            assert.ok(called, '');
+        });
+    });
+
 });

@@ -37,10 +37,6 @@
         onSearchBlur: false,
         clearOnLoad: false
     };
-    let searchActiveCallback = false;
-    let searchEmptyCallback = false;
-    let searchFocusCallback = false;
-    let searchBlurCallback = false;
 
     function Plugin(element, options) {
         this.$element = $(element);
@@ -61,10 +57,10 @@
         },
 
         determineCallbacks() {
-            searchActiveCallback = $.isFunction(this.settings.onSearchActive);
-            searchEmptyCallback = $.isFunction(this.settings.onSearchEmpty);
-            searchFocusCallback = $.isFunction(this.settings.onSearchFocus);
-            searchBlurCallback = $.isFunction(this.settings.onSearchBlur);
+            this.hasSearchActiveCallback = $.isFunction(this.settings.onSearchActive);
+            this.hasSearchEmptyCallback = $.isFunction(this.settings.onSearchEmpty);
+            this.hasSearchFocusCallback = $.isFunction(this.settings.onSearchFocus);
+            this.hasSearchBlurCallback = $.isFunction(this.settings.onSearchBlur);
         },
 
         bindEvents() {
@@ -74,11 +70,11 @@
                 this.updateStriping();
             });
 
-            if (searchFocusCallback) {
+            if (this.hasSearchFocusCallback) {
                 this.$search.on('focus', this.settings.onSearchFocus);
             }
 
-            if (searchBlurCallback) {
+            if (this.hasSearchBlurCallback) {
                 this.$search.on('blur', this.settings.onSearchBlur);
             }
 
@@ -115,12 +111,12 @@
                 this.$searchElems.css('display', '');
                 this.updateStriping();
 
-                if (searchEmptyCallback) {
+                if (this.hasSearchEmptyCallback) {
                     this.settings.onSearchEmpty(this.$element);
                 }
 
                 return;
-            } else if (searchActiveCallback) {
+            } else if (this.hasSearchActiveCallback) {
                 this.settings.onSearchActive(this.$element, term);
             }
 
