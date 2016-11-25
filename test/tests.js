@@ -222,8 +222,33 @@ $(function() {
             });
             $('#t1 .search').val('foo').trigger('change');
             var $rows = $('#t1 .table tbody tr');
-            assert.deepEqual($rows.slice(0, 1).toArray(), showElems);
-            assert.deepEqual($rows.slice(1).toArray(), hideElems);
+            assert.deepEqual($rows.slice(0, 1).toArray(), showElems, 'The show function should be called correctly');
+            assert.deepEqual($rows.slice(1).toArray(), hideElems, 'The hide function should be called correctly');
+        });
+
+        QUnit.test('should allow a custom reset function', function(assert) {
+            $('#t1 .search').val('');
+            $('#t1 .table').searchable({
+                searchField: '#t1 .search',
+                show: function($elem) {
+                    $elem.addClass('shown');
+                },
+                hide: function($elem) {
+                    $elem.addClass('hidden');
+                },
+                reset: function($elems) {
+                    $elems.removeClass('shown hidden');
+                }
+            });
+            $('#t1 .search').val('foo').trigger('change');
+            var $rows = $('#t1 .table tbody tr');
+            assert.equal($rows.filter('.shown').length, 1, 'The show function should be called correctly');
+            assert.equal($rows.filter('.hidden').length, 2, 'The hide function should be called correctly');
+
+            $('#t1 .search').val('').trigger('change');
+            assert.equal($rows.filter('.shown').length, 0, 'The custom reset function should be called correctly');
+            assert.equal($rows.filter('.hidden').length, 0, 'The custom reset function should be called correctly');
+
         });
     });
 

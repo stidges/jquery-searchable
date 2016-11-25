@@ -24,11 +24,14 @@
         striped: false,
         oddRow: {},
         evenRow: {},
-        hide(elem) {
-            elem.hide();
+        hide($elem) {
+            $elem.hide();
         },
-        show(elem) {
-            elem.show();
+        show($elem) {
+            $elem.show();
+        },
+        reset($elems) {
+            $elems.css('display', '');
         },
         searchType: 'default',
         onSearchActive: false,
@@ -108,7 +111,7 @@
 
         search(term) {
             if ($.trim(term).length === 0) {
-                this.$searchElems.css('display', '');
+                this.settings.reset(this.$searchElems);
                 this.updateStriping();
 
                 if (this.hasSearchEmptyCallback) {
