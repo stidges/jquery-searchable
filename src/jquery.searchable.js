@@ -61,7 +61,7 @@
 
         bindEvents() {
             this.$search.on('change keyup', (e) => {
-                this.search($(e.currentTarget).val());
+                this.search(this.$search.val());
 
                 this.updateStriping();
             });
@@ -86,15 +86,20 @@
 
         updateStriping() {
             const styles = ['oddRow', 'evenRow'];
-            const selector = `${this.settings.selector}:visible`;
 
             if (!this.settings.striped) {
                 return;
             }
 
-            $(selector, this.$element).each((i, row) => {
-                $(row).css(this.settings[styles[i % 2]]);
-            });
+            this.$searchElems
+                .filter((i, row) => {
+                    const { display, visibility } = $(row).css(['display', 'visibility']);
+
+                    return display !== 'none' && visibility !== 'hidden';
+                })
+                .each((i, row) => {
+                    $(row).css(this.settings[styles[i % 2]]);
+                });
         },
 
         search(term) {
