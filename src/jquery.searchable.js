@@ -3,7 +3,15 @@
  * Copyright 2014-2016 Stidges
  * Licensed under MIT (https://github.com/stidges/jquery-searchable/blob/master/LICENSE)
  */
-;(($) => {
+;((factory) => {
+    if (typeof define === 'function' && define.amd) {
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        factory(require('jquery'));
+    } else {
+        factory(jQuery);
+    }
+})(($) => {
 
     'use strict';
 
@@ -185,4 +193,4 @@
         });
     };
 
-})(jQuery, window, document);
+});
