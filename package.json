@@ -29,6 +29,7 @@
     "gulp-buble": "^0.8.0",
     "gulp-eslint": "^3.0.1",
     "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
     "gulp-uglify": "^2.0.0",
     "qunitjs": "^1.23.1"
   }

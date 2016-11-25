@@ -3,6 +3,8 @@ var uglify = require('gulp-uglify');
 var eslint = require('gulp-eslint');
 var rename = require('gulp-rename');
 var buble = require('gulp-buble');
+var replace = require('gulp-replace');
+var pkg = require('./package.json');
 
 gulp.task('lint', function() {
     return gulp.src('./src/jquery.searchable.js')
@@ -23,6 +25,8 @@ gulp.task('uglify', ['scripts'], function() {
 gulp.task('scripts', function() {
     return gulp.src('./src/jquery.searchable.js')
         .pipe(buble())
+        .pipe(replace('{VERSION}', pkg.version))
+        .pipe(replace('{YEAR}', new Date().getFullYear()))
         .pipe(gulp.dest('./dist'));
 });
 
