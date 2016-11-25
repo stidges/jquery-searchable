@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>jQuery Searchable Test Suite</title>
+    <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+        <div id="t1">
+            <input type="text" class="search" value="">
+            <table class="table">
+                <tbody>
+                    <tr><td>foo</td><td>bar</td></tr>
+                    <tr><td>baz</td><td>quux</td></tr>
+                    <tr><td>lorem</td><td>ipsum</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="t2">
+            <input type="text" class="search" value="">
+            <div class="hide-me">
+                <table class="table">
+                    <tbody>
+                        <tr><td>foo</td><td>bar</td></tr>
+                        <tr><td>baz</td><td>quux</td></tr>
+                        <tr><td>foo</td><td>bar</td></tr>
+                        <tr><td>baz</td><td>quux</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../dist/jquery.searchable.js"></script>
+    <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+    <script src="utils.js"></script>
+    <script src="assertions.js"></script>
+    <script src="tests.js"></script>
+</body>
+</html>
