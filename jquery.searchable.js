@@ -74,7 +74,11 @@
               .replace(/[ÓÖ]/g, 'O')
               .replace(/[óö]/g, 'o')
               .replace(/[ÚÜ]/g, 'U')
-              .replace(/[úü]/g, 'u');
+              .replace(/[úü]/g, 'u')
+              .replace(/[Ñ]/g, 'N')
+              .replace(/[ñ]/g, 'n')
+              .replace(/[ß]/g, 's')
+            ;
           }
           return text;
         },
