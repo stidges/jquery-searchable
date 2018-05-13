@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * jQuery Searchable Plugin v1.0.0
  * https://github.com/stidges/jquery-searchable
  *
@@ -22,12 +22,15 @@
             onSearchEmpty: false,
             onSearchFocus: false,
             onSearchBlur: false,
-            clearOnLoad: false
+            clearOnLoad: false,
+            onAfterSearch: false,
+            ignoreDiacritics: false
         },
         searchActiveCallback = false,
         searchEmptyCallback = false,
         searchFocusCallback = false,
-        searchBlurCallback = false;
+        searchBlurCallback = false,
+        afterSearchCallback = false;
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -98,6 +101,28 @@
             searchEmptyCallback = isFunction( this.settings.onSearchEmpty );
             searchFocusCallback = isFunction( this.settings.onSearchFocus );
             searchBlurCallback = isFunction( this.settings.onSearchBlur );
+            afterSearchCallback = isFunction( this.settings.onAfterSearch );
+        },
+
+        removeDiacritics : function (text) {
+          if (this.settings.ignoreDiacritics) {
+            text = text
+              .replace(/[ÀÁÂÃÄÅ]/g, 'A')
+              .replace(/[àáâãäå]/g, 'a')
+              .replace(/[ÈÉÊË]/g, 'E')
+              .replace(/[èéêë]/g, 'e')
+              .replace(/[Í]/g, 'I')
+              .replace(/[í]/g, 'i')
+              .replace(/[ÓÖ]/g, 'O')
+              .replace(/[óö]/g, 'o')
+              .replace(/[ÚÜ]/g, 'U')
+              .replace(/[úü]/g, 'u')
+              .replace(/[Ñ]/g, 'N')
+              .replace(/[ñ]/g, 'n')
+              .replace(/[ß]/g, 's')
+            ;
+          }
+          return text;
         },
 
         bindEvents: function() {
@@ -107,6 +132,10 @@
                 that.search( $( this ).val() );
 
                 that.updateStriping();
+
+                if ( afterSearchCallback ) {
+                  that.settings.onAfterSearch();
+                }
             });
 
             if ( searchFocusCallback ) {
@@ -142,7 +171,7 @@
         },
 
         search: function( term ) {
-            var matcher, elemCount, children, childCount, hide, $elem, i, x;
+            var matcher, elemCount, children, childCount, hide, $elem, i, x, contentText;
 
             if ( $.trim( term ).length === 0 ) {
                 this.$searchElems.css( 'display', '' );
@@ -158,6 +187,7 @@
             }
 
             elemCount = this.$searchElems.length;
+            term = this.removeDiacritics(term);
             matcher   = this.matcherFunc( term );
 
             for ( i = 0; i < elemCount; i++ ) {
@@ -167,7 +197,9 @@
                 hide       = true;
 
                 for ( x = 0; x < childCount; x++ ) {
-                    if ( matcher( $( children[ x ] ).text() ) ) {
+                    contentText = $( children[ x ] ).text();
+                    contentText = this.removeDiacritics(contentText);
+                    if ( matcher( contentText ) ) {
                         hide = false;
                         break;
                     }
