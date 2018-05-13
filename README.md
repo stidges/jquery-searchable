@@ -110,6 +110,11 @@ $( '#element' ).searchable({
 - Added some events that allow you to call custom functions during the search lifecycle: onSearchActive, onSearchEmpty, onSearchFocus, onSearchBlur (view the [configuration](#configuration) for more information).
 - Added the `clearOnLoad` setting which allows you to clear the search input on page load / refresh.
 
+**Version 1.1.1:**
+
+- Added onAfterSearch callback.
+- Added ignoreDiacritics option. Default is false so it should be backwards compatible.
+
 ## Contributing & Issues
 
 Please feel free to submit any issues or pull requests, they are more then welcome. When submitting an issue, please specify the version number and describe the issue in detail so that it can be solved as soon as possible!
