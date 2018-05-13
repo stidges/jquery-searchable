@@ -56,7 +56,9 @@ This plugin provides the following configuration options:
 | onSearchEmpty | `false` | Allows you to define a function to be called when the search input is empty. This function will be called once when the search input is empty or cleared. The searchable element will be passed to the function. |
 | onSearchFocus | `false` | Allows you to define a function to be called when the search input is focussed. The `this` context of this function will be the search input element. |
 | onSearchBlur | `false` | Allows you to define a function to be called when the search input is blurred. The `this` context of this function will be the search input element. |
+| onAfterSearch | `false` | Allows you to define a function to be called after searchable has hidden/shown the elements. This can be used to count the number of elements being hidden/shown. |
 | clearOnLoad | `false` | Determines whether the search input should be cleared on page load (either `true` or `false`). |
+| ignoreDiacritics | `false` | Determines if diacritic letters should be ignore. For example, when searching for `u` -> `ú` and `ü` will also be found. |
 
 ### Example usage
 
@@ -89,7 +91,11 @@ $( '#element' ).searchable({
     onSearchBlur: function() {
         $( '#feedback' ).hide();
     },
-    clearOnLoad: true
+    onAfterSearch: function() {
+        // i.e. count number of items shown
+    },
+    clearOnLoad: true,
+    ignoreDiacritics: true
 });
 ```
 
